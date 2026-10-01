@@ -2,17 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Kelas extends Model
 {
-    use HasFactory;
+    protected $table = 'kelas';
 
-    protected $guarded = ['id'];
+    protected $fillable = [
+        'nama_kelas',
+    ];
 
-    public function user()
+    public function getKelas()
     {
-        return $this->hasMany(UserModel::class, 'kelas_id');
+        return $this->all();
     }
 }
