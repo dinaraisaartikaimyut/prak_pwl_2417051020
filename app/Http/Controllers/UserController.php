@@ -9,12 +9,13 @@ use Illuminate\Http\Request;
 class UserController extends Controller
 {
     public $userModel;
+
     public $kelasModel;
 
     public function __construct()
     {
-        $this->userModel = new UserModel();
-        $this->kelasModel = new Kelas();
+        $this->userModel = new UserModel;
+        $this->kelasModel = new Kelas;
     }
 
     public function index()
@@ -40,12 +41,51 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $this->userModel->create([
-            'nama' => $request->input('nama'),
-            'nim' => $request->input('npm'),
-            'kelas_id' => $request->input('kelas_id'),
+        $validated = $request->validate([
+            'nama' => 'required|string|max:255',
+            'npm' => 'required|string|max:255',
+            'kelas_id' => 'required|exists:kelas,id',
         ]);
 
-        return redirect()->route('user.index');
+        $this->userModel->create([
+            'nama' => $validated['nama'],
+            'nim' => $validated['npm'],
+            'kelas_id' => $validated['kelas_id'],
+        ]);
+
+        return redirect()->route('user.index')->with('success', 'Pengguna berhasil ditambahkan.');
+    }
+
+    public function edit(string $id)
+    {
+        return view('edit_user', [
+            'title' => 'Edit Pengguna',
+            'user' => $this->userModel->findOrFail($id),
+            'kelas' => $this->kelasModel->getKelas(),
+        ]);
+    }
+
+    public function update(Request $request, string $id)
+    {
+        $validated = $request->validate([
+            'nama' => 'required|string|max:255',
+            'npm' => 'required|string|max:255',
+            'kelas_id' => 'required|exists:kelas,id',
+        ]);
+
+        $this->userModel->findOrFail($id)->update([
+            'nama' => $validated['nama'],
+            'nim' => $validated['npm'],
+            'kelas_id' => $validated['kelas_id'],
+        ]);
+
+        return redirect()->route('user.index')->with('success', 'Pengguna berhasil diperbarui.');
+    }
+
+    public function destroy(string $id)
+    {
+        $this->userModel->findOrFail($id)->delete();
+
+        return redirect()->route('user.index')->with('success', 'Pengguna berhasil dihapus.');
     }
 }

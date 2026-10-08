@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 
 class UserModel extends Model
 {
+    use HasUuids;
+
     protected $table = 'user';
 
     protected $fillable = [
@@ -22,10 +25,10 @@ class UserModel extends Model
             '=',
             'user.kelas_id'
         )
-        ->select(
-            'user.*',
-            'kelas.nama_kelas as nama_kelas'
-        )
-        ->get();
+            ->select(
+                'user.*',
+                'kelas.nama_kelas as nama_kelas'
+            )
+            ->get();
     }
 }

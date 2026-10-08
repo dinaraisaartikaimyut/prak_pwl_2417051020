@@ -43,6 +43,14 @@
         Tambah Mata Kuliah
     </a>
 
+    @if (session('success'))
+        <div class="alert alert-success" role="alert">{{ session('success') }}</div>
+    @endif
+
+    @if (session('error'))
+        <div class="alert alert-danger" role="alert">{{ session('error') }}</div>
+    @endif
+
     <div class="card">
         <div class="card-body">
             <table class="table table-bordered table-hover mb-0">
@@ -52,6 +60,7 @@
                         <th>Kode</th>
                         <th>Nama Mata Kuliah</th>
                         <th>SKS</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -61,10 +70,18 @@
                             <td>{{ $mk->kode_matakuliah }}</td>
                             <td>{{ $mk->nama_matakuliah }}</td>
                             <td>{{ $mk->sks }}</td>
+                            <td class="text-nowrap">
+                                <a href="{{ route('matakuliah.edit', $mk->id) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                <form action="{{ route('matakuliah.destroy', $mk->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus mata kuliah ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Hapus</button>
+                                </form>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center">
+                            <td colspan="5" class="text-center">
                                 Belum ada data mata kuliah.
                             </td>
                         </tr>
